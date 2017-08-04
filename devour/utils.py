@@ -20,7 +20,7 @@ def run_import(import_file, importer):
     Runs the import method for the given importer. The importer is expected
     to be a dotted path or the python class.
     """
-    if isinstance(importer, basestring):
+    if isinstance(importer, str):
         importer_class = load_module(importer)
     else:
         importer_class = importer
