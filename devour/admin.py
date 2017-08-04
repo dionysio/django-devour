@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
@@ -15,11 +15,12 @@ class FileImportAdmin(object):
         """
         url_name_prefix = '%(app_name)s_%(model_name)s' % self.url_params
         urls = super(FileImportAdmin, self).get_urls()
-        custom_urls = patterns('',
+        custom_urls =[
             url(r'^import/$',
                 self.admin_site.admin_view(self.import_file), {},
                 name='%s_devour' % url_name_prefix
-            ))
+            )
+        ]
         return custom_urls + urls
 
     def import_file(self, request):
@@ -31,7 +32,7 @@ class FileImportAdmin(object):
             run_import(uploaded_file, self.importer)
             msg = _('Successfully processed %s.') % uploaded_file
             self.message_user(request, msg)
-        except Exception, e:
+        except Exception as e:
             msg = _('Import failed: %s') % e
             self.message_user(request, msg, level=messages.ERROR)
         return redirect(self.change_list_url_name)
@@ -51,5 +52,5 @@ class FileImportAdmin(object):
         """
         return {
             'app_name': self.model._meta.app_label,
-            'model_name': self.model._meta.module_name,
+            'model_name': self.model._meta.model_name,
         }
